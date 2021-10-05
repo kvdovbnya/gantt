@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
 	<meta charset="UTF-8">
-	<title>Simple Gantt</title>
+	<title>Диаграмма Ганта</title>
 	<style>
 		body {
 			font-family: sans-serif;
@@ -22,67 +22,75 @@
 </head>
 <body>
 	<div class="container">
-		<h2>Interactive Gantt Chart entirely made in SVG!</h2>
+		<h2 align=center>(1221-200) Тестовая заявка</h2>
 		<div class="gantt-target"></div>
 	</div>
 	<script>
-		var tasks = [
-			{
-				start: '2018-10-01',
-				end: '2018-10-08',
-				name: 'Redesign website',
-				id: "Task 0",
-				progress: 20
-			},
-			{
-				start: '2018-10-03',
-				end: '2018-10-06',
-				name: 'Write new content',
-				id: "Task 1",
-				progress: 5,
-				dependencies: 'Task 0'
-			},
-			{
-				start: '2018-10-04',
-				end: '2018-10-08',
-				name: 'Apply new styles',
-				id: "Task 2",
-				progress: 10,
-				dependencies: 'Task 1'
-			},
-			{
-				start: '2018-10-08',
-				end: '2018-10-09',
-				name: 'Review',
-				id: "Task 3",
-				progress: 5,
-				dependencies: 'Task 2'
-			},
-			{
-				start: '2018-10-08',
-				end: '2018-10-10',
-				name: 'Deploy',
-				id: "Task 4",
-				progress: 0,
-				dependencies: 'Task 2'
-			},
-			{
-				start: '2018-10-11',
-				end: '2018-10-11',
-				name: 'Go Live!',
-				id: "Task 5",
-				progress: 0,
-				dependencies: 'Task 4',
-				custom_class: 'bar-milestone'
-			},
-			{
-				start: '2014-01-05',
-				end: '2019-10-12',
-				name: 'Long term task',
-				id: "Task 6",
-				progress: 0
-			}
-		]
+        var tasks = [
+              {
+                  start: '2021-04-19',
+                  end: '2021-04-19',
+                  name: 'Чертежи',
+                  id: "Task 1",
+                  progress: 100
+              },
+              {
+                  start: '2021-04-19',
+                  end: '2021-04-19',
+                  name: 'Ведомость материалов',
+                  id: "Task 2",
+                  progress: 100
+              },
+              {
+                  start: '2021-04-19',
+                  end: '2021-10-05',
+                  name: 'Материал',
+                  id: "Task 3",
+                  progress: 96
+              },
+              {
+                  start: '2021-04-30',
+                  end: '2021-10-05',
+                  name: 'Заготовка',
+                  id: "Task 4",
+                  progress: 85
+              },
+              {
+                  start: '2021-04-19',
+                  end: '2021-04-19',
+                  name: 'Ведомость комплектующих',
+                  id: "Task 5",
+                  progress: 100
+              },
+              {
+                  start: '2021-04-19',
+                  end: '2021-10-05',
+                  name: 'Комплектующие',
+                  id: "Task 6",
+                  progress: 92
+              },
+              {
+                  start: '2021-04-13',
+                  end: '2021-10-05',
+                  name: 'Механическая обработка',
+                  id: "Task 7",
+                  progress: 50
+              },
+              {
+                  start: '2021-05-27',
+                  end: '2021-10-05',
+                  name: 'Сборка',
+                  id: "Task 8",
+                  progress: 40
+              },
+              {
+                  start: '2021-04-07',
+                  end: '2021-10-05',
+                  name: 'Упаковка',
+                  id: "Task 9",
+                  progress: 0
+              },
+        ]
 		var gantt_chart = new Gantt(".gantt-target", tasks, {
 			on_click: function (task) {
 				console.log(task);
@@ -97,9 +105,16 @@
 				console.log(mode);
 			},
 			view_mode: 'Month',
-			language: 'en'
+			language: 'ru'
 		});
 		console.log(gantt_chart);
 	</script>
+	<div align=center style="margin-top:20px; margin-bottom: 50px;">
+		<button type="button" onclick="gantt_chart.change_view_mode('Day')">День</button>
+		<button type="button" onclick="gantt_chart.change_view_mode('Week')">Неделя</button>
+        <button type="button" onclick="gantt_chart.change_view_mode('Two weeks')">Две недели</button>
+		<button type="button" onclick="gantt_chart.change_view_mode('Month')">Месяц</button>
+		<button type="button" onclick="gantt_chart.change_view_mode('Year')">Год</button>
+	</div>
 </body>
 </html>

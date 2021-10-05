@@ -11,6 +11,7 @@ const VIEW_MODE = {
     HALF_DAY: 'Half Day',
     DAY: 'Day',
     WEEK: 'Week',
+    TWO_WEEKS: 'Two weeks',
     MONTH: 'Month',
     YEAR: 'Year'
 };
@@ -181,7 +182,6 @@ export default class Gantt {
 
     update_view_scale(view_mode) {
         this.options.view_mode = view_mode;
-
         if (view_mode === VIEW_MODE.DAY) {
             this.options.step = 24;
             this.options.column_width = 38;
@@ -194,6 +194,9 @@ export default class Gantt {
         } else if (view_mode === VIEW_MODE.WEEK) {
             this.options.step = 24 * 7;
             this.options.column_width = 140;
+        } else if (view_mode === VIEW_MODE.TWO_WEEKS) {
+            this.options.step = 24 * 14;
+            this.options.column_width = 130;
         } else if (view_mode === VIEW_MODE.MONTH) {
             this.options.step = 24 * 30;
             this.options.column_width = 120;
@@ -384,7 +387,7 @@ export default class Gantt {
             }
             // thick tick for first week
             if (
-                this.view_is(VIEW_MODE.WEEK) &&
+                (this.view_is(VIEW_MODE.WEEK) || this.view_is(VIEW_MODE.TWO_WEEKS)) &&
                 date.getDate() >= 1 &&
                 date.getDate() < 8
             ) {
@@ -501,6 +504,10 @@ export default class Gantt {
                 date.getMonth() !== last_date.getMonth()
                     ? date_utils.format(date, 'D MMM', this.options.language)
                     : date_utils.format(date, 'D', this.options.language),
+            'Two weeks_lower':
+                date.getMonth() !== last_date.getMonth()
+                    ? date_utils.format(date, 'D MMM', this.options.language)
+                    : date_utils.format(date, 'D', this.options.language),
             Month_lower: date_utils.format(date, 'MMMM', this.options.language),
             Year_lower: date_utils.format(date, 'YYYY', this.options.language),
             'Quarter Day_upper':
@@ -518,6 +525,10 @@ export default class Gantt {
                     ? date_utils.format(date, 'MMMM', this.options.language)
                     : '',
             Week_upper:
+                date.getMonth() !== last_date.getMonth()
+                    ? date_utils.format(date, 'MMMM', this.options.language)
+                    : '',
+            'Two weeks_upper':
                 date.getMonth() !== last_date.getMonth()
                     ? date_utils.format(date, 'MMMM', this.options.language)
                     : '',
@@ -546,6 +557,8 @@ export default class Gantt {
             Day_upper: this.options.column_width * 30 / 2,
             Week_lower: 0,
             Week_upper: this.options.column_width * 4 / 2,
+            'Two weeks_lower': 0,
+            'Two weeks_upper': this.options.column_width * 2 / 2,
             Month_lower: this.options.column_width / 2,
             Month_upper: this.options.column_width * 12 / 2,
             Year_lower: this.options.column_width / 2,
@@ -821,6 +834,14 @@ export default class Gantt {
 
         if (this.view_is(VIEW_MODE.WEEK)) {
             rem = dx % (this.options.column_width / 7);
+            position =
+                odx -
+                rem +
+                (rem < this.options.column_width / 14
+                    ? 0
+                    : this.options.column_width / 7);
+        }  if (this.view_is(VIEW_MODE.TWO_WEEKS)) {
+            rem = dx % (this.options.column_width / 14);
             position =
                 odx -
                 rem +

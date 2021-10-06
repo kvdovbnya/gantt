@@ -133,6 +133,11 @@ $handle-color: #ddd !default;
 	}
 }
 
+.gantt-target {
+	display: flex;
+  	justify-content: center;
+}
+
 .gantt-container {
 	position: relative;
 	overflow: auto;

@@ -2,7 +2,6 @@ import date_utils from './date_utils';
 import { $, createSVG } from './svg_utils';
 import Bar from './bar';
 import Arrow from './arrow';
-import Popup from './popup';
 
 import './gantt.scss';
 
@@ -23,7 +22,6 @@ export default class Gantt {
         this.setup_tasks(tasks);
         // initialize with default view mode
         this.change_view_mode();
-        this.bind_events();
     }
 
     setup_wrapper(element) {
@@ -66,11 +64,6 @@ export default class Gantt {
         const parent_element = this.$svg.parentElement;
         parent_element.appendChild(this.$container);
         this.$container.appendChild(this.$svg);
-
-        // popup wrapper
-        this.popup_wrapper = document.createElement('div');
-        this.popup_wrapper.classList.add('popup-wrapper');
-        this.$container.appendChild(this.popup_wrapper);
     }
 
     setup_options(options) {
@@ -85,8 +78,8 @@ export default class Gantt {
             padding: 18,
             view_mode: 'Day',
             date_format: 'YYYY-MM-DD',
-            popup_trigger: 'click',
-            custom_popup_html: null,
+            //popup_trigger: 'click',
+            //custom_popup_html: null,
             language: 'en'
         };
         this.options = Object.assign({}, default_options, options);
@@ -229,6 +222,48 @@ export default class Gantt {
 
         // add date padding on both sides
         if (this.view_is([VIEW_MODE.QUARTER_DAY, VIEW_MODE.HALF_DAY])) {
+            this.gantt_start = date_utils.add(this.gantt_start, -2, 'day');
+            this.gantt_end = date_utils.add(this.gantt_end, 2, 'day');
+        } else if (this.view_is(VIEW_MODE.DAY)) {
+            this.gantt_start = date_utils.add(this.gantt_start, -5, 'day');
+            this.gantt_end = date_utils.add(this.gantt_end, 4, 'day');
+        } else if (this.view_is(VIEW_MODE.WEEK)) {
+            this.gantt_start = date_utils.add(this.gantt_start, -7, 'day');
+            this.gantt_end = date_utils.add(this.gantt_end, 0, 'day');
+        } else if (this.view_is(VIEW_MODE.TWO_WEEKS)) {
+            this.gantt_start = date_utils.add(this.gantt_start, -14, 'day');
+            this.gantt_end = date_utils.add(this.gantt_end, 0, 'day');
+        } else if (this.view_is(VIEW_MODE.MONTH)) {
+            //this.gantt_start = date_utils.start_of(this.gantt_start, 'year');    
+            this.gantt_start = date_utils.add(this.gantt_start, -1, 'month');        
+            this.gantt_end = date_utils.add(this.gantt_end, 0, 'day');
+        } else if (this.view_is(VIEW_MODE.YEAR)) {
+            this.gantt_start = date_utils.add(this.gantt_start, -1, 'year');
+            this.gantt_end = date_utils.add(this.gantt_end, 1, 'year');
+        } else {
+            this.gantt_start = date_utils.add(this.gantt_start, -1, 'month');
+            this.gantt_end = date_utils.add(this.gantt_end, 1, 'month');
+        }
+    }
+
+    setup_gantt_dates_original() {      // Копия неизменённой процедуры setup_gantt_dates
+        this.gantt_start = this.gantt_end = null;
+
+        for (let task of this.tasks) {
+            // set global start and end date
+            if (!this.gantt_start || task._start < this.gantt_start) {
+                this.gantt_start = task._start;
+            }
+            if (!this.gantt_end || task._end > this.gantt_end) {
+                this.gantt_end = task._end;
+            }
+        }
+
+        this.gantt_start = date_utils.start_of(this.gantt_start, 'day');
+        this.gantt_end = date_utils.start_of(this.gantt_end, 'day');
+
+        // add date padding on both sides
+        if (this.view_is([VIEW_MODE.QUARTER_DAY, VIEW_MODE.HALF_DAY])) {
             this.gantt_start = date_utils.add(this.gantt_start, -7, 'day');
             this.gantt_end = date_utils.add(this.gantt_end, 7, 'day');
         } else if (this.view_is(VIEW_MODE.MONTH)) {
@@ -265,11 +300,6 @@ export default class Gantt {
             }
             this.dates.push(cur_date);
         }
-    }
-
-    bind_events() {
-        this.bind_grid_click();
-        this.bind_bar_events();
     }
 
     render() {
@@ -644,173 +674,6 @@ export default class Gantt {
         parent_element.scrollLeft = scroll_pos;
     }
 
-    bind_grid_click() {
-        $.on(
-            this.$svg,
-            this.options.popup_trigger,
-            '.grid-row, .grid-header',
-            () => {
-                this.unselect_all();
-                this.hide_popup();
-            }
-        );
-    }
-
-    bind_bar_events() {
-        let is_dragging = false;
-        let x_on_start = 0;
-        let y_on_start = 0;
-        let is_resizing_left = false;
-        let is_resizing_right = false;
-        let parent_bar_id = null;
-        let bars = []; // instanceof Bar
-        this.bar_being_dragged = null;
-
-        function action_in_progress() {
-            return is_dragging || is_resizing_left || is_resizing_right;
-        }
-
-        $.on(this.$svg, 'mousedown', '.bar-wrapper, .handle', (e, element) => {
-            const bar_wrapper = $.closest('.bar-wrapper', element);
-
-            if (element.classList.contains('left')) {
-                is_resizing_left = true;
-            } else if (element.classList.contains('right')) {
-                is_resizing_right = true;
-            } else if (element.classList.contains('bar-wrapper')) {
-                is_dragging = true;
-            }
-
-            bar_wrapper.classList.add('active');
-
-            x_on_start = e.offsetX;
-            y_on_start = e.offsetY;
-
-            parent_bar_id = bar_wrapper.getAttribute('data-id');
-            const ids = [
-                parent_bar_id,
-                ...this.get_all_dependent_tasks(parent_bar_id)
-            ];
-            bars = ids.map(id => this.get_bar(id));
-
-            this.bar_being_dragged = parent_bar_id;
-
-            bars.forEach(bar => {
-                const $bar = bar.$bar;
-                $bar.ox = $bar.getX();
-                $bar.oy = $bar.getY();
-                $bar.owidth = $bar.getWidth();
-                $bar.finaldx = 0;
-            });
-        });
-
-        $.on(this.$svg, 'mousemove', e => {
-            if (!action_in_progress()) return;
-            const dx = e.offsetX - x_on_start;
-            const dy = e.offsetY - y_on_start;
-
-            bars.forEach(bar => {
-                const $bar = bar.$bar;
-                $bar.finaldx = this.get_snap_position(dx);
-
-                if (is_resizing_left) {
-                    if (parent_bar_id === bar.task.id) {
-                        bar.update_bar_position({
-                            x: $bar.ox + $bar.finaldx,
-                            width: $bar.owidth - $bar.finaldx
-                        });
-                    } else {
-                        bar.update_bar_position({
-                            x: $bar.ox + $bar.finaldx
-                        });
-                    }
-                } else if (is_resizing_right) {
-                    if (parent_bar_id === bar.task.id) {
-                        bar.update_bar_position({
-                            width: $bar.owidth + $bar.finaldx
-                        });
-                    }
-                } else if (is_dragging) {
-                    bar.update_bar_position({ x: $bar.ox + $bar.finaldx });
-                }
-            });
-        });
-
-        document.addEventListener('mouseup', e => {
-            if (is_dragging || is_resizing_left || is_resizing_right) {
-                bars.forEach(bar => bar.group.classList.remove('active'));
-            }
-
-            is_dragging = false;
-            is_resizing_left = false;
-            is_resizing_right = false;
-        });
-
-        $.on(this.$svg, 'mouseup', e => {
-            this.bar_being_dragged = null;
-            bars.forEach(bar => {
-                const $bar = bar.$bar;
-                if (!$bar.finaldx) return;
-                bar.date_changed();
-                bar.set_action_completed();
-            });
-        });
-
-        this.bind_bar_progress();
-    }
-
-    bind_bar_progress() {
-        let x_on_start = 0;
-        let y_on_start = 0;
-        let is_resizing = null;
-        let bar = null;
-        let $bar_progress = null;
-        let $bar = null;
-
-        $.on(this.$svg, 'mousedown', '.handle.progress', (e, handle) => {
-            is_resizing = true;
-            x_on_start = e.offsetX;
-            y_on_start = e.offsetY;
-
-            const $bar_wrapper = $.closest('.bar-wrapper', handle);
-            const id = $bar_wrapper.getAttribute('data-id');
-            bar = this.get_bar(id);
-
-            $bar_progress = bar.$bar_progress;
-            $bar = bar.$bar;
-
-            $bar_progress.finaldx = 0;
-            $bar_progress.owidth = $bar_progress.getWidth();
-            $bar_progress.min_dx = -$bar_progress.getWidth();
-            $bar_progress.max_dx = $bar.getWidth() - $bar_progress.getWidth();
-        });
-
-        $.on(this.$svg, 'mousemove', e => {
-            if (!is_resizing) return;
-            let dx = e.offsetX - x_on_start;
-            let dy = e.offsetY - y_on_start;
-
-            if (dx > $bar_progress.max_dx) {
-                dx = $bar_progress.max_dx;
-            }
-            if (dx < $bar_progress.min_dx) {
-                dx = $bar_progress.min_dx;
-            }
-
-            const $handle = bar.$handle_progress;
-            $.attr($bar_progress, 'width', $bar_progress.owidth + dx);
-            $.attr($handle, 'points', bar.get_progress_polygon_points());
-            $bar_progress.finaldx = dx;
-        });
-
-        $.on(this.$svg, 'mouseup', () => {
-            is_resizing = false;
-            if (!($bar_progress && $bar_progress.finaldx)) return;
-            bar.progress_changed();
-            bar.set_action_completed();
-        });
-    }
-
     get_all_dependent_tasks(task_id) {
         let out = [];
         let to_process = [task_id];
@@ -898,19 +761,6 @@ export default class Gantt {
         });
     }
 
-    show_popup(options) {
-        if (!this.popup) {
-            this.popup = new Popup(
-                this.popup_wrapper,
-                this.options.custom_popup_html
-            );
-        }
-        this.popup.show(options);
-    }
-
-    hide_popup() {
-        this.popup && this.popup.hide();
-    }
 
     trigger_event(event, args) {
         if (this.options['on_' + event]) {

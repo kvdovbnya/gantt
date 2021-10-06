@@ -93,6 +93,11 @@
 .gantt .hide {
   display: none; }
 
+.gantt-target {
+	display: flex;
+	justify-content: center; 
+}
+	
 .gantt-container {
   position: relative;
   overflow: auto;

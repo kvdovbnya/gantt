@@ -581,42 +581,6 @@ class Bar {
     }
 
     draw_resize_handles() {
-        /*
-        if (this.invalid) return;
-
-        const bar = this.$bar;
-        const handle_width = 8;
-
-        createSVG('rect', {
-            x: bar.getX() + bar.getWidth() - 9,
-            y: bar.getY() + 1,
-            width: handle_width,
-            height: this.height - 2,
-            rx: this.corner_radius,
-            ry: this.corner_radius,
-            class: 'handle right',
-            append_to: this.handle_group
-        });
-
-        createSVG('rect', {
-            x: bar.getX() + 1,
-            y: bar.getY() + 1,
-            width: handle_width,
-            height: this.height - 2,
-            rx: this.corner_radius,
-            ry: this.corner_radius,
-            class: 'handle left',
-            append_to: this.handle_group
-        });
-
-        if (this.task.progress && this.task.progress < 100) {
-            this.$handle_progress = createSVG('polygon', {
-                points: this.get_progress_polygon_points().join(','),
-                class: 'handle progress',
-                append_to: this.handle_group
-            });
-        }
-        */
     }
 
     get_progress_polygon_points() {
@@ -637,48 +601,9 @@ class Bar {
     }
 
     setup_click_event() {
-        /*
-        $.on(this.group, 'focus ' + this.gantt.options.popup_trigger, e => {
-            if (this.action_completed) {
-                // just finished a move action, wait for a few seconds
-                return;
-            }
-
-            this.show_popup();
-            this.gantt.unselect_all();
-            this.group.classList.add('active');
-        });
-
-        $.on(this.group, 'dblclick', e => {
-            if (this.action_completed) {
-                // just finished a move action, wait for a few seconds
-                return;
-            }
-
-            this.gantt.trigger_event('click', [this.task]);
-        });
-        */
     }
 
     show_popup() {
-        /*
-        if (this.gantt.bar_being_dragged) return;
-
-        const start_date = date_utils.format(this.task._start, 'MMM D', this.gantt.options.language);
-        const end_date = date_utils.format(
-            date_utils.add(this.task._end, -1, 'second'),
-            'MMM D',
-            this.gantt.options.language
-        );
-        const subtitle = start_date + ' - ' + end_date;
-
-        this.gantt.show_popup({
-            target_element: this.$bar,
-            title: this.task.name,
-            subtitle: subtitle,
-            task: this.task,
-        });
-        */
     }
 
     compute_start_end_date() {
@@ -1141,38 +1066,6 @@ class Gantt {
         } else if (this.view_is(VIEW_MODE.YEAR)) {
             this.gantt_start = date_utils.add(this.gantt_start, -1, 'year');
             this.gantt_end = date_utils.add(this.gantt_end, 1, 'year');
-        } else {
-            this.gantt_start = date_utils.add(this.gantt_start, -1, 'month');
-            this.gantt_end = date_utils.add(this.gantt_end, 1, 'month');
-        }
-    }
-
-    setup_gantt_dates_original() {      // Копия неизменённой процедуры setup_gantt_dates
-        this.gantt_start = this.gantt_end = null;
-
-        for (let task of this.tasks) {
-            // set global start and end date
-            if (!this.gantt_start || task._start < this.gantt_start) {
-                this.gantt_start = task._start;
-            }
-            if (!this.gantt_end || task._end > this.gantt_end) {
-                this.gantt_end = task._end;
-            }
-        }
-
-        this.gantt_start = date_utils.start_of(this.gantt_start, 'day');
-        this.gantt_end = date_utils.start_of(this.gantt_end, 'day');
-
-        // add date padding on both sides
-        if (this.view_is([VIEW_MODE.QUARTER_DAY, VIEW_MODE.HALF_DAY])) {
-            this.gantt_start = date_utils.add(this.gantt_start, -7, 'day');
-            this.gantt_end = date_utils.add(this.gantt_end, 7, 'day');
-        } else if (this.view_is(VIEW_MODE.MONTH)) {
-            this.gantt_start = date_utils.start_of(this.gantt_start, 'year');
-            this.gantt_end = date_utils.add(this.gantt_end, 1, 'year');
-        } else if (this.view_is(VIEW_MODE.YEAR)) {
-            this.gantt_start = date_utils.add(this.gantt_start, -2, 'year');
-            this.gantt_end = date_utils.add(this.gantt_end, 2, 'year');
         } else {
             this.gantt_start = date_utils.add(this.gantt_start, -1, 'month');
             this.gantt_end = date_utils.add(this.gantt_end, 1, 'month');

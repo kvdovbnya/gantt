@@ -23,6 +23,15 @@
 <body>
 	<div class="container">
 		<h2 align=center>(1221-200) Тестовая заявка</h2>
+        
+        <div class="button-container">
+            <button type="button" class="button-ch" onclick="gantt_chart.change_view_mode('Day')">День</button>
+            <button type="button" class="button-ch" onclick="gantt_chart.change_view_mode('Week')">Неделя</button>
+            <button type="button" class="button-ch" onclick="gantt_chart.change_view_mode('Two weeks')">Две недели</button>
+            <button type="button" class="button-ch" onclick="gantt_chart.change_view_mode('Month')">Месяц</button>
+            <button type="button" class="button-ch" onclick="gantt_chart.change_view_mode('Year')">Год</button>
+        </div>
+
         <div class="gantt-target"></div>
 	</div>
 	<script>
@@ -109,12 +118,5 @@
 		});
 		console.log(gantt_chart);
 	</script>
-	<div align=center style="margin-top:20px; margin-bottom: 50px;">
-		<button type="button" onclick="gantt_chart.change_view_mode('Day')">День</button>
-		<button type="button" onclick="gantt_chart.change_view_mode('Week')">Неделя</button>
-        <button type="button" onclick="gantt_chart.change_view_mode('Two weeks')">Две недели</button>
-		<button type="button" onclick="gantt_chart.change_view_mode('Month')">Месяц</button>
-		<button type="button" onclick="gantt_chart.change_view_mode('Year')">Год</button>
-	</div>
 </body>
 </html>

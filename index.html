@@ -3,26 +3,12 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Диаграмма Ганта</title>
-	<style>
-		body {
-			font-family: sans-serif;
-			background: #ccc;
-		}
-		.container {
-			width: 80%;
-			margin: 0 auto;
-		}
-		/* custom class */
-		.gantt .bar-milestone .bar {
-			fill: tomato;
-		}
-	</style>
 	<link rel="stylesheet" href="dist/frappe-gantt.css" />
 	<script src="dist/frappe-gantt.js"></script>
 </head>
 <body>
-	<div class="container">
-		<h2 align=center>(1221-200) Тестовая заявка</h2>
+    <div class="container" id="container">
+        <h2 align=center>(1221-200) Тестовая заявка</h2>
         
         <div class="button-container">
             <button type="button" class="button-ch" onclick="gantt_chart.change_view_mode('Day')">День</button>
@@ -33,7 +19,8 @@
         </div>
 
         <div class="gantt-target"></div>
-	</div>
+    </div>
+   
 	<script>
         var tasks = [
               {
@@ -101,22 +88,9 @@
               },
         ]
 		var gantt_chart = new Gantt(".gantt-target", tasks, {
-			on_click: function (task) {
-				console.log(task);
-			},
-			on_date_change: function(task, start, end) {
-				console.log(task, start, end);
-			},
-			on_progress_change: function(task, progress) {
-				console.log(task, progress);
-			},
-			on_view_change: function(mode) {
-				console.log(mode);
-			},
 			view_mode: 'Month',
 			language: 'ru'
 		});
-		console.log(gantt_chart);
 	</script>
 </body>
 </html>

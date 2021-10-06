@@ -1,4 +1,12 @@
 /**/
+body {
+	font-family: sans-serif;
+	background: #ccc;
+}
+.container {
+	width: 80%;
+	margin: 0 auto;
+}
 .gantt-target {
 	display: flex;
 	justify-content: center; 

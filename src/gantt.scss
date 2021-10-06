@@ -10,6 +10,31 @@ $text-color: #333 !default;
 $blue: #a3a3ff !default;
 $handle-color: #ddd !default;
 
+/**/
+body {
+	font-family: sans-serif;
+	background: rgb(226, 237, 238);
+}
+.container {
+	width: 80%;
+	margin: 0 auto;
+}
+.gantt-target {
+	display: flex;
+	justify-content: center; 
+}
+.button-container {
+	display: flex;
+    justify-content: center;
+    margin-bottom: 4px;
+    margin-top: 20px;
+    height: 30px;
+}
+.button-ch {
+	margin: 1px;
+}
+/**/
+
 .gantt {
 	.grid-background {
 		fill: none;

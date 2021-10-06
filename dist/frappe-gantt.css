@@ -21,6 +21,17 @@ body {
 .button-ch {
 	margin: 1px;
 }
+
+.gantt .bar-incomplete {
+  fill: #ffbcbc;
+  stroke: #8D99A6;
+  stroke-width: 0;
+  transition: stroke-width .3s ease;
+  user-select: none; }
+
+.gantt .bar-progress-incomplete {
+  fill: #fa7c7c;}
+
 /**/
 
 .gantt .grid-background {

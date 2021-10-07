@@ -9,7 +9,6 @@
 <body>
     <div class="container" id="container">
         <h2 align=center>(1221-200) Тестовая заявка</h2>
-        
         <div class="button-container">
             <button type="button" class="button-ch" onclick="gantt_chart.change_view_mode('Day')">День</button>
             <button type="button" class="button-ch" onclick="gantt_chart.change_view_mode('Week')">Неделя</button>
@@ -29,7 +28,8 @@
                   name: 'Чертежи',
                   id: "Task 1",
                   progress: 100,
-                  both_dates: false,
+                  has_date_start: false,
+                  has_date_end: false,
               },
               {
                   start: '2021-04-19',
@@ -37,7 +37,8 @@
                   name: 'Ведомость материалов',
                   id: "Task 2",
                   progress: 100,
-                  both_dates: true,
+                  has_date_start: false,
+                  has_date_end: true,
               },
               {
                   start: '2021-04-19',
@@ -45,7 +46,8 @@
                   name: 'Материал',
                   id: "Task 3",
                   progress: 96,
-                  both_dates: false,
+                  has_date_start: true,
+                  has_date_end: false,
               },
               {
                   start: '2021-04-30',
@@ -53,7 +55,8 @@
                   name: 'Заготовка',
                   id: "Task 4",
                   progress: 85,
-                  both_dates: true,
+                  has_date_start: false,
+                  has_date_end: false,
               },
               {
                   start: '2021-04-19',
@@ -61,7 +64,8 @@
                   name: 'Ведомость комплектующих',
                   id: "Task 5",
                   progress: 100,
-                  both_dates: false,
+                  has_date_start: false,
+                  has_date_end: true,
               },
               {
                   start: '2021-04-19',
@@ -69,7 +73,8 @@
                   name: 'Комплектующие',
                   id: "Task 6",
                   progress: 92,
-                  both_dates: true,
+                  has_date_start: true,
+                  has_date_end: false,
               },
               {
                   start: '2021-04-13',
@@ -77,7 +82,8 @@
                   name: 'Механическая обработка',
                   id: "Task 7",
                   progress: 50,
-                  both_dates: false,
+                  has_date_start: true,
+                  has_date_end: true,
               },
               {
                   start: '2021-05-27',
@@ -85,7 +91,8 @@
                   name: 'Сборка',
                   id: "Task 8",
                   progress: 40,
-                  both_dates: true,
+                  has_date_start: false,
+                  has_date_end: true,
               },
               {
                   start: '2021-04-07',
@@ -93,13 +100,18 @@
                   name: 'Упаковка',
                   id: "Task 9",
                   progress: 0,
-                  both_dates: false,
+                  has_date_start: true,
+                  has_date_end: false,
               },
         ]
 		var gantt_chart = new Gantt(".gantt-target", tasks, {
 			view_mode: 'Month',
-			language: 'ru'
+			language: 'ru',
+            date_p: '2021-09-01',
 		});
+        
+        //window.addEventListener('contextmenu', function(evt) {evt.preventDefault();})
+
         console.log(gantt_chart);
         window.focus();
 	</script>

@@ -1,37 +1,40 @@
 /**/
 body {
 	font-family: sans-serif;
-	background: rgb(159, 187, 211);
-}
+	background: rgb(159, 187, 211);}
+
 .container {
 	width: 80%;
-	margin: 0 auto;
-}
+	margin: 0 auto;}
+
 .gantt-target {
 	display: flex;
-	justify-content: center; 
-}
+	justify-content: center; }
+
 .button-container {
 	display: flex;
     justify-content: center;
     margin-bottom: 4px;
     margin-top: 20px;
-    height: 30px;
-}
-.button-ch {
-	margin: 1px;
-}
+    height: 30px;}
 
-.gantt .bar-incomplete {
-  fill: #ffbcbc;
-  stroke: #8D99A6;
-  stroke-width: 0;
-  transition: stroke-width .3s ease;
-  user-select: none; }
+.button-ch {
+	margin: 1px;}
+
+.gantt .bar-progress-no-start {
+  fill: #dae63b;}
+
+.gantt .bar-progress-no-end {
+  fill: #dae63b;}
 
 .gantt .bar-progress-incomplete {
-  fill: #fa7c7c;}
+  fill: #fcd876;}
 
+.highlight-today {
+  fill:#bbb4a2;}
+
+.highlight-startdate {
+  fill:#bbb4a2;}
 /**/
 
 .gantt .grid-background {

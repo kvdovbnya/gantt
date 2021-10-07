@@ -78,9 +78,8 @@ export default class Gantt {
             padding: 18,
             view_mode: 'Day',
             date_format: 'YYYY-MM-DD',
-            //popup_trigger: 'click',
-            //custom_popup_html: null,
-            language: 'en'
+            language: 'en',
+            date_p: '',     // Дата подачи заявки изначально не будет указана.
         };
         this.options = Object.assign({}, default_options, options);
     }
@@ -413,14 +412,21 @@ export default class Gantt {
         }
     }
 
-    make_grid_highlights() {
-        // highlight today's date
+    highlight_date(d, css_name) {
+        if (d == '') {
+            return;
+        }
+        let usedDate = date_utils.parse(d);
         if (this.view_is(VIEW_MODE.DAY)) {
             const x =
-                date_utils.diff(date_utils.today(), this.gantt_start, 'hour') /
+                date_utils.diff(usedDate, this.gantt_start, 'hour') /
                 this.options.step *
                 this.options.column_width;
             const y = 0;
+
+            console.log('date_utils.today(): ' + date_utils.today());
+            console.log('yesterday: ' + date_utils.add(date_utils.today(), -1, 'day'));
+            console.log('date_p: ' + this.options.date_p);
 
             const width = this.options.column_width;
             const height =
@@ -434,10 +440,14 @@ export default class Gantt {
                 y,
                 width,
                 height,
-                class: 'today-highlight',
+                class: css_name,
                 append_to: this.layers.grid
             });
-        }
+        }   
+    }
+    make_grid_highlights() {
+       this.highlight_date(date_utils.today(),  'highlight-today');
+       this.highlight_date(this.options.date_p, 'highlight-startdate');
     }
 
     make_dates() {

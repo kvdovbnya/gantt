@@ -74,14 +74,6 @@ export default class Bar {
     }
 
     draw_bar() {
-        let new_class_name;
-        if (this.task.both_dates == false) {
-            new_class_name = 'bar-incomplete';
-            console.log('Incomplete task: ' + this.task.name);
-        } else {
-            new_class_name = 'bar';
-        }
-
         this.$bar = createSVG('rect', {
             x: this.x,
             y: this.y,
@@ -89,11 +81,10 @@ export default class Bar {
             height: this.height,
             rx: this.corner_radius,
             ry: this.corner_radius,
-            class: new_class_name,
+            class: 'bar',
             append_to: this.bar_group
         });
         
-
         animateSVG(this.$bar, 'width', 0, this.width);
 
         if (this.invalid) {
@@ -105,10 +96,10 @@ export default class Bar {
         if (this.invalid) return;
 
         let new_class_name;
-        if (this.task.both_dates == false) {
-            new_class_name = 'bar-progress-incomplete';
+        if (this.task.has_date_start == true) {
+            new_class_name = (this.task.has_date_end == true ? 'bar-progress' : 'bar-progress-no-end');
         } else {
-            new_class_name = 'bar-progress';
+            new_class_name = (this.task.has_date_end == true ? 'bar-progress-no-start' : 'bar-progress-incomplete');
         }
 
         this.$bar_progress = createSVG('rect', {

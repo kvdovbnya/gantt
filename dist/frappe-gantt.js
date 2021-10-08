@@ -561,12 +561,6 @@ class Bar {
         } else {
             new_class_name = (this.task.has_date_end == true ? 'bar-progress-no-start' : 'bar-progress-incomplete');
         }
-        /*
-        if (this.task.both_dates == false) {
-            new_class_name = 'bar-progress-incomplete';
-        } else {
-            new_class_name = 'bar-progress';
-        }*/
 
         this.$bar_progress = createSVG('rect', {
             x: this.x,
@@ -583,6 +577,7 @@ class Bar {
     }
 
     draw_label() {
+ 
         createSVG('text', {
             x: this.x + this.width / 2,
             y: this.y + this.height / 2,

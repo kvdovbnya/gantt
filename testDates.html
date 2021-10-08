@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta charset="UTF-8">
+	<title>Даты</title>
+</head>
+<body>
+    <script>
+        document.write( rusDate(new Date(2020, 10, 06)) + '<br>' );
+        document.write( rusDate("lol you re a fucker") + '<br>' );
+        document.write( rusDate(new Date(2021, 01, 01)) + '<br>' );
+        document.write( rusDate(new Date(2000, 10, 32)) + '<br>' );
+        document.write( rusDate(new Date(2020, 10, 06)) + '<br>' );
+
+        function rusDate(fullDate, delimiter) {
+            if ((typeof fullDate.getDay === 'function') &&
+                (typeof fullDate.getMonth === 'function') &&
+                (typeof fullDate.getFullYear === 'function')) {
+                    
+                if (delimiter == undefined) {delimiter = '.';}
+
+                let d = fullDate.getDay();
+                let m = fullDate.getMonth();
+                let y = fullDate.getFullYear();
+                
+                return  (d < 10 ? '0' : '') + d + delimiter 
+                        + (m < 10 ? '0' : '') + m + delimiter
+                        + y; 
+            }
+            else {
+                return '';
+            }
+        }
+	</script>
+</body>
+</html>

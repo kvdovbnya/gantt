@@ -2,7 +2,6 @@ import date_utils from './date_utils';
 import { $, createSVG } from './svg_utils';
 import Bar from './bar';
 import Arrow from './arrow';
-
 import './gantt.scss';
 
 const VIEW_MODE = {

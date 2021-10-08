@@ -121,7 +121,7 @@ export default class Bar {
         createSVG('text', {
             x: this.x + this.width / 2,
             y: this.y + this.height / 2,
-            innerHTML: this.task.name + ' (' + this.task.progress + '%)',
+            innerHTML: this.task.name + ' (' + this.task.progress + '%) - ' + date_utils.diff(this.task._end, this.task._start, 'day') + ' дн.',
             class: 'bar-label',
             append_to: this.bar_group
         });

@@ -1114,11 +1114,12 @@ class Gantt {
         this.map_arrows_on_bars();
         this.set_width();
         this.set_scroll_position();
+        this.highlight_dates();         // Выделение дат должно отображаться поверх остальных слоёв.
     }
 
     setup_layers() {
         this.layers = {};
-        const layers = ['grid', 'date', 'arrow', 'progress', 'bar', 'details'];
+        const layers = ['grid', 'date', 'arrow', 'progress', 'bar', 'details', 'highlights'];
         // make group layers
         for (let layer of layers) {
             this.layers[layer] = createSVG('g', {
@@ -1133,7 +1134,6 @@ class Gantt {
         this.make_grid_rows();
         this.make_grid_header();
         this.make_grid_ticks();
-        this.make_grid_highlights();
     }
 
     make_grid_background() {
@@ -1251,24 +1251,25 @@ class Gantt {
         if (d == '') {
             return;
         }
+
+        let highlight_width = 4;
+
         let usedDate = date_utils.parse(d);
-        if (this.view_is(VIEW_MODE.DAY)) {
+        //if (this.view_is(VIEW_MODE.DAY)) {
             const x =
-                date_utils.diff(usedDate, this.gantt_start, 'hour') /
+                (date_utils.diff(usedDate, this.gantt_start, 'hour') /
                 this.options.step *
-                this.options.column_width;
-            const y = 0;
+                this.options.column_width);
 
-            console.log('date_utils.today(): ' + date_utils.today());
-            console.log('yesterday: ' + date_utils.add(date_utils.today(), -1, 'day'));
-            console.log('date_p: ' + this.options.date_p);
+            const y = this.options.header_height + (this.options.padding / 2);    // Дубль того, что вычисляется в make_grid_ticks().
 
-            const width = this.options.column_width;
+            const width = highlight_width;
             const height =
                 (this.options.bar_height + this.options.padding) *
                     this.tasks.length +
                 this.options.header_height +
-                this.options.padding / 2;
+                this.options.padding / 2
+                - y;
 
             createSVG('rect', {
                 x,
@@ -1276,11 +1277,12 @@ class Gantt {
                 width,
                 height,
                 class: css_name,
-                append_to: this.layers.grid
+                append_to: this.layers.highlights,
             });
-        }   
+        //}   
     }
-    make_grid_highlights() {
+
+    highlight_dates() {
        this.highlight_date(date_utils.today(),  'highlight-today');
        this.highlight_date(this.options.date_p, 'highlight-startdate');
     }

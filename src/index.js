@@ -416,38 +416,38 @@ export default class Gantt {
             return;
         }
 
-        let highlight_width = 4;
+        let highlight_width = (this.view_is(VIEW_MODE.YEAR) ? 1 : 4); // Для режима 'Год' не нужна слишком широкая линия.
 
         let usedDate = date_utils.parse(d);
-        //if (this.view_is(VIEW_MODE.DAY)) {
-            const x =
-                (date_utils.diff(usedDate, this.gantt_start, 'hour') /
-                this.options.step *
-                this.options.column_width);
+        //if (this.view_is(VIEW_MODE.DAY)) {        // Подсветка требуется во всех режимах.
+        const x =
+            (date_utils.diff(usedDate, this.gantt_start, 'hour') /
+            this.options.step *
+            this.options.column_width);
 
-            const y = this.options.header_height + (this.options.padding / 2);    // Дубль того, что вычисляется в make_grid_ticks().
+        const y = this.options.header_height + (this.options.padding / 2);    // Дубль того, что вычисляется в make_grid_ticks().
 
-            const width = highlight_width;
-            const height =
-                (this.options.bar_height + this.options.padding) *
-                    this.tasks.length +
-                this.options.header_height +
-                this.options.padding / 2
-                - y;
+        const width = highlight_width;
+        const height =
+            (this.options.bar_height + this.options.padding) *
+                this.tasks.length +
+            this.options.header_height +
+            this.options.padding / 2
+            - y;
 
-            createSVG('rect', {
-                x,
-                y,
-                width,
-                height,
-                class: css_name,
-                append_to: this.layers.highlights,
-            });
+        createSVG('rect', {
+            x,
+            y,
+            width,
+            height,
+            class: css_name,
+            append_to: this.layers.highlights,
+        });
         //}   
     }
 
     highlight_dates() {
-       this.highlight_date(date_utils.today(),  'highlight-today');
+       this.highlight_date(date_utils.today(),  'highlight-today');     // CSS более не используется, убрать.
        this.highlight_date(this.options.date_p, 'highlight-startdate');
     }
 

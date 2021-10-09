@@ -585,7 +585,7 @@ class Bar {
             y: this.y + this.height / 2,
             innerHTML: this.task.name 
                     + ' (' + this.task.progress + '%)'
-                    +   ((this.task.has_date_start == true) || (this.task.has_date_end == true) ? ' - ' + count_days + 'дн.' : ''),
+                    +   ((this.task.has_date_start == true) || (this.task.has_date_end == true) ? ' - ' + count_days + ' дн.' : ''),
             class: 'bar-label',
             append_to: this.bar_group
         });
@@ -925,6 +925,17 @@ class Gantt {
 
     setup_tasks(tasks) {
         // prepare tasks
+        let _has_date_p;
+        let _date_p;
+        const today = date_utils.today();
+
+        if (this.options.date_p != '') {
+            _date_p = date_utils.parse(this.options.date_p);
+            _has_date_p = true;
+        } else {
+            _has_date_p = false;
+        }
+
         this.tasks = tasks.map((task, i) => {
             // convert to Date objects
             task._start = date_utils.parse(task.start);
@@ -938,19 +949,28 @@ class Gantt {
             // cache index
             task._index = i;
 
-            // invalid dates
-            if (!task.start && !task.end) {
-                const today = date_utils.today();
-                task._start = today;
-                task._end = date_utils.add(today, 2, 'day');
+            // invalid dates    
+            if ( (!task.start) || (task.start == '') ) {
+                console.log(task.name + ' do not have start date');
+                task.has_date_start = false;
+                task._start = (_has_date_p == true ? _date_p : today);
+                console.log('_date_p: ' + _date_p);
+                console.log('task._start: ' + task._start);
+            } else {
+                task.has_date_start = true;
             }
 
-            if (!task.start && task.end) {
-                task._start = date_utils.add(task._end, -2, 'day');
+            if ( (!task.end) || (task.end == '') ) {
+                task._end = today;
+                task.has_date_end = false;
+            } else {
+                task.has_date_end = true;
             }
 
-            if (task.start && !task.end) {
-                task._end = date_utils.add(task._start, 2, 'day');
+            // invalid flag (Теперь помечаются задачи, где дата начала > даты окончания, хотя в журнале их быть не может.)
+            if (date_utils.diff(task._start, task._end, 'day') > 0) {
+                task._start = task._end;
+                task.invalid = true;
             }
 
             // if hours is not set, assume the last day is full day
@@ -961,9 +981,11 @@ class Gantt {
             }
 
             // invalid flag
+            /*
             if (!task.start || !task.end) {
                 task.invalid = true;
             }
+            */
 
             // dependencies
             if (typeof task.dependencies === 'string' || !task.dependencies) {
@@ -1113,12 +1135,12 @@ class Gantt {
         this.setup_layers();
         this.make_grid();
         this.make_dates();
+        this.highlight_dates();         // TODO: Определить порядок отображения подсветки.
         this.make_bars();
         this.make_arrows();
         this.map_arrows_on_bars();
         this.set_width();
         this.set_scroll_position();
-        this.highlight_dates();         // Выделение дат должно отображаться поверх остальных слоёв.
     }
 
     setup_layers() {
@@ -1251,7 +1273,9 @@ class Gantt {
         }
     }
 
-    highlight_date(d, css_name) {
+    // Так как пометка теперь делается не путём выделения столбца с датой, а только чертой, то требуется указывать, выводить черту до или после выбранной даты. 
+    // Параметр 'place': 'before' или не указано - перед столбцом, 'after' - после него.
+    highlight_date(d, css_name, place) {
         if (d == '') {
             return;
         }
@@ -1260,8 +1284,9 @@ class Gantt {
 
         let usedDate = date_utils.parse(d);
         //if (this.view_is(VIEW_MODE.DAY)) {        // Подсветка требуется во всех режимах.
+        
         const x =
-            (date_utils.diff(usedDate, this.gantt_start, 'hour') /
+            ( (date_utils.diff(usedDate, this.gantt_start, 'hour') + (place == 'after' ? 24 : 0) ) /
             this.options.step *
             this.options.column_width);
 
@@ -1287,8 +1312,8 @@ class Gantt {
     }
 
     highlight_dates() {
-       this.highlight_date(date_utils.today(),  'highlight-today');     // CSS более не используется, убрать.
-       this.highlight_date(this.options.date_p, 'highlight-startdate');
+       this.highlight_date(date_utils.today(),  'highlight-today',      'after');     // CSS более не используется, убрать.
+       this.highlight_date(this.options.date_p, 'highlight-startdate',  'before');
     }
 
     make_dates() {

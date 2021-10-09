@@ -125,7 +125,7 @@ export default class Bar {
             y: this.y + this.height / 2,
             innerHTML: this.task.name 
                     + ' (' + this.task.progress + '%)'
-                    +   ((this.task.has_date_start == true) || (this.task.has_date_end == true) ? ' - ' + count_days + 'дн.' : ''),
+                    +   ((this.task.has_date_start == true) || (this.task.has_date_end == true) ? ' - ' + count_days + ' дн.' : ''),
             class: 'bar-label',
             append_to: this.bar_group
         });

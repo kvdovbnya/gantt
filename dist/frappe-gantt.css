@@ -22,19 +22,19 @@ body {
 	margin: 1px;}
 
 .gantt .bar-progress-no-start {
-  fill: #dae63b;}
+  fill: #b5be35;}
 
 .gantt .bar-progress-no-end {
-  fill: #dae63b;}
+  fill: #b5be35;}
 
 .gantt .bar-progress-incomplete {
-  fill: #fcd876;}
+  fill: #9063b9;}
 
 .highlight-today {
   fill:#ff8575;}
 
 .highlight-startdate {
-  fill:#ff8575;}
+  fill:#18ad0d;}
 /**/
 
 .gantt .grid-background {

@@ -117,11 +117,15 @@ export default class Bar {
     }
 
     draw_label() {
- 
+        let count_days = date_utils.diff(this.task._end, this.task._start, 'day')
+
+        // Если в этапе не указаны обе даты, то кол-во дней выводиться не будет.
         createSVG('text', {
             x: this.x + this.width / 2,
             y: this.y + this.height / 2,
-            innerHTML: this.task.name + ' (' + this.task.progress + '%) - ' + date_utils.diff(this.task._end, this.task._start, 'day') + ' дн.',
+            innerHTML: this.task.name 
+                    + ' (' + this.task.progress + '%)'
+                    +   ((this.task.has_date_start == true) || (this.task.has_date_end == true) ? ' - ' + count_days + 'дн.' : ''),
             class: 'bar-label',
             append_to: this.bar_group
         });

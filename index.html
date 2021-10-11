@@ -70,6 +70,7 @@
                   name: 'Механическая обработка',
                   id: "Task 7",
                   progress: 50,
+                  person: 'Конышев Г.',
               },
               {
                   //start: '2021-05-27',
@@ -77,6 +78,7 @@
                   name: 'Сборка',
                   id: "Task 8",
                   progress: 40,
+                  person: 'Осокин Д.',
               },
               {
                   start: '2021-04-07',
@@ -84,6 +86,7 @@
                   name: 'Упаковка',
                   id: "Task 9",
                   progress: 0,
+                  person: 'Запупырченко И. А.',
               },
         ]
 		var gantt_chart = new Gantt(".gantt-target", tasks, {
@@ -91,8 +94,14 @@
 			language: 'ru',
             date_p: '2021-09-01',
             date_contract: "2021-09-30",
+            popup_trigger: 'click',
 		});
         
+        // Перенести в отдельную процедуру.
+        window.addEventListener('click', function(evt) {
+            console.log('mouse_x после присвоения: ' + evt.clientX);
+        });
+
         //window.addEventListener('contextmenu', function(evt) {evt.preventDefault();})
 
         console.log(gantt_chart);

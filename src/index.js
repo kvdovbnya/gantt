@@ -22,6 +22,7 @@ export default class Gantt {
         this.setup_tasks(tasks);
         // initialize with default view mode
         this.change_view_mode();
+        this.bind_events();
     }
 
     setup_wrapper(element) {
@@ -84,7 +85,7 @@ export default class Gantt {
             view_mode: 'Day',
             date_format: 'YYYY-MM-DD',
             popup_trigger: 'click',
-            custom_popup_html: null,
+            custom_popup_html:  null,
             language: 'en',
             date_p: '',         // Дата подачи заявки.
             date_contract: '',  // Дата готовности по договору.
@@ -109,7 +110,8 @@ export default class Gantt {
             // convert to Date objects
             task._start = date_utils.parse(task.start);
             task._end = date_utils.parse(task.end);
-
+            task._person = (!task.person ? '' : task.person);
+            
             // make task invalid if duration too large
             if (date_utils.diff(task._end, task._start, 'year') > 10) {
                 task.end = null;
@@ -120,11 +122,8 @@ export default class Gantt {
 
             // invalid dates    
             if ( (!task.start) || (task.start == '') ) {
-                console.log(task.name + ' do not have start date');
                 task.has_date_start = false;
                 task._start = (_has_date_p == true ? _date_p : today);
-                console.log('_date_p: ' + _date_p);
-                console.log('task._start: ' + task._start);
             } else {
                 task.has_date_start = true;
             }
@@ -705,6 +704,9 @@ export default class Gantt {
         );
     }
 
+    bind_bar_events() {         // Удалено, так как возможность изменения диаграмм отключена.
+    };   
+
     get_all_dependent_tasks(task_id) {
         let out = [];
         let to_process = [task_id];
@@ -796,7 +798,7 @@ export default class Gantt {
         if (!this.popup) {
             this.popup = new Popup(
                 this.popup_wrapper,
-                this.options.custom_popup_html
+                this.options.custom_popup_html,
             );
         }
         this.popup.show(options);

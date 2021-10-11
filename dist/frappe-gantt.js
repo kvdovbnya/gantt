@@ -619,11 +619,24 @@ class Bar {
                 // just finished a move action, wait for a few seconds
                 return;
             }
-
             this.show_popup();
             this.gantt.unselect_all();
             this.group.classList.add('active');
         });
+
+        /* Закомментированное работает, но если его использовать, то не получится указывать событие, по которому вызывать выпадающее меню.
+        $.on(this.group, 'click', e=> {
+            if (this.action_completed) {
+                // just finished a move action, wait for a few seconds
+                return;
+            }
+            this.show_popup();
+            this.gantt.unselect_all();
+            this.group.classList.add('active');
+            alert('mouse x: ' + e.clientX);
+        });
+        */
+
 
         $.on(this.group, 'dblclick', e => {
             if (this.action_completed) {
@@ -638,18 +651,29 @@ class Bar {
     show_popup() {
         if (this.gantt.bar_being_dragged) return;
 
+        
+
         const start_date = date_utils.format(this.task._start, 'MMM D', this.gantt.options.language);
         const end_date = date_utils.format(
             date_utils.add(this.task._end, -1, 'second'),
             'MMM D',
             this.gantt.options.language
         );
-        const subtitle = start_date + ' - ' + end_date;
+        let show_param = function(name, value) {
+            return (
+                '<div class="popup-param-name">' + name + ': </div>' +
+                '<div class="popup-param-value">' + value + '</div>'
+            );
+        };
 
         this.gantt.show_popup({
             target_element: this.$bar,
             title: this.task.name,
-            subtitle: subtitle,
+            subtitle:   '<div class=popup-param-container>' + 
+                            show_param('Дата начала',       (this.task.has_date_start == true ?   date_utils.format(this.task._start, 'DD.MM.YYYY') : 'не указана')) +
+                            show_param('Дата окончания',    (this.task.has_date_end == true ?     date_utils.format(this.task._end,   'DD.MM.YYYY') : 'не указана')) +
+                            show_param('Ответственный',     (this.task._person != '' ? this.task._person : 'не указан')) +
+                        '</div>',
             task: this.task,
         });
     }
@@ -965,6 +989,7 @@ class Gantt {
         this.setup_tasks(tasks);
         // initialize with default view mode
         this.change_view_mode();
+        this.bind_events();
     }
 
     setup_wrapper(element) {
@@ -1027,7 +1052,7 @@ class Gantt {
             view_mode: 'Day',
             date_format: 'YYYY-MM-DD',
             popup_trigger: 'click',
-            custom_popup_html: null,
+            custom_popup_html:  null,
             language: 'en',
             date_p: '',         // Дата подачи заявки.
             date_contract: '',  // Дата готовности по договору.
@@ -1052,7 +1077,8 @@ class Gantt {
             // convert to Date objects
             task._start = date_utils.parse(task.start);
             task._end = date_utils.parse(task.end);
-
+            task._person = (!task.person ? '' : task.person);
+            
             // make task invalid if duration too large
             if (date_utils.diff(task._end, task._start, 'year') > 10) {
                 task.end = null;
@@ -1063,11 +1089,8 @@ class Gantt {
 
             // invalid dates    
             if ( (!task.start) || (task.start == '') ) {
-                console.log(task.name + ' do not have start date');
                 task.has_date_start = false;
                 task._start = (_has_date_p == true ? _date_p : today);
-                console.log('_date_p: ' + _date_p);
-                console.log('task._start: ' + task._start);
             } else {
                 task.has_date_start = true;
             }
@@ -1648,6 +1671,9 @@ class Gantt {
         );
     }
 
+    bind_bar_events() {         // Удалено, так как возможность изменения диаграмм отключена.
+    };   
+
     get_all_dependent_tasks(task_id) {
         let out = [];
         let to_process = [task_id];
@@ -1739,7 +1765,7 @@ class Gantt {
         if (!this.popup) {
             this.popup = new Popup(
                 this.popup_wrapper,
-                this.options.custom_popup_html
+                this.options.custom_popup_html,
             );
         }
         this.popup.show(options);

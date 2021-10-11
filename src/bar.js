@@ -159,11 +159,24 @@ export default class Bar {
                 // just finished a move action, wait for a few seconds
                 return;
             }
-
             this.show_popup();
             this.gantt.unselect_all();
             this.group.classList.add('active');
         });
+
+        /* Закомментированное работает, но если его использовать, то не получится указывать событие, по которому вызывать выпадающее меню.
+        $.on(this.group, 'click', e=> {
+            if (this.action_completed) {
+                // just finished a move action, wait for a few seconds
+                return;
+            }
+            this.show_popup();
+            this.gantt.unselect_all();
+            this.group.classList.add('active');
+            alert('mouse x: ' + e.clientX);
+        });
+        */
+
 
         $.on(this.group, 'dblclick', e => {
             if (this.action_completed) {
@@ -178,6 +191,8 @@ export default class Bar {
     show_popup() {
         if (this.gantt.bar_being_dragged) return;
 
+        
+
         const start_date = date_utils.format(this.task._start, 'MMM D', this.gantt.options.language);
         const end_date = date_utils.format(
             date_utils.add(this.task._end, -1, 'second'),
@@ -186,10 +201,21 @@ export default class Bar {
         );
         const subtitle = start_date + ' - ' + end_date;
 
+        let show_param = function(name, value) {
+            return (
+                '<div class="popup-param-name">' + name + ': </div>' +
+                '<div class="popup-param-value">' + value + '</div>'
+            );
+        }
+
         this.gantt.show_popup({
             target_element: this.$bar,
             title: this.task.name,
-            subtitle: subtitle,
+            subtitle:   '<div class=popup-param-container>' + 
+                            show_param('Дата начала',       (this.task.has_date_start == true ?   date_utils.format(this.task._start, 'DD.MM.YYYY') : 'не указана')) +
+                            show_param('Дата окончания',    (this.task.has_date_end == true ?     date_utils.format(this.task._end,   'DD.MM.YYYY') : 'не указана')) +
+                            show_param('Ответственный',     (this.task._person != '' ? this.task._person : 'не указан')) +
+                        '</div>',
             task: this.task,
         });
     }

@@ -2,6 +2,7 @@ import date_utils from './date_utils';
 import { $, createSVG } from './svg_utils';
 import Bar from './bar';
 import Arrow from './arrow';
+import Popup from './popup';
 import './gantt.scss';
 
 const VIEW_MODE = {
@@ -63,6 +64,11 @@ export default class Gantt {
         const parent_element = this.$svg.parentElement;
         parent_element.appendChild(this.$container);
         this.$container.appendChild(this.$svg);
+
+        // popup wrapper
+        this.popup_wrapper = document.createElement('div');
+        this.popup_wrapper.classList.add('popup-wrapper');
+        this.$container.appendChild(this.popup_wrapper);
     }
 
     setup_options(options) {
@@ -77,6 +83,8 @@ export default class Gantt {
             padding: 18,
             view_mode: 'Day',
             date_format: 'YYYY-MM-DD',
+            popup_trigger: 'click',
+            custom_popup_html: null,
             language: 'en',
             date_p: '',         // Дата подачи заявки.
             date_contract: '',  // Дата готовности по договору.
@@ -289,6 +297,11 @@ export default class Gantt {
             }
             this.dates.push(cur_date);
         }
+    }
+
+    bind_events() {
+        this.bind_grid_click();
+        this.bind_bar_events();
     }
 
     render() {
@@ -680,6 +693,18 @@ export default class Gantt {
         parent_element.scrollLeft = scroll_pos;
     }
 
+    bind_grid_click() {
+        $.on(
+            this.$svg,
+            this.options.popup_trigger,
+            '.grid-row, .grid-header',
+            () => {
+                this.unselect_all();
+                this.hide_popup();
+            }
+        );
+    }
+
     get_all_dependent_tasks(task_id) {
         let out = [];
         let to_process = [task_id];
@@ -767,7 +792,20 @@ export default class Gantt {
         });
     }
 
+    show_popup(options) {
+        if (!this.popup) {
+            this.popup = new Popup(
+                this.popup_wrapper,
+                this.options.custom_popup_html
+            );
+        }
+        this.popup.show(options);
+    }
 
+    hide_popup() {
+        this.popup && this.popup.hide();
+    }
+    
     trigger_event(event, args) {
         if (this.options['on_' + event]) {
             this.options['on_' + event].apply(null, args);

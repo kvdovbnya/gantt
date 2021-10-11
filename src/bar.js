@@ -154,9 +154,44 @@ export default class Bar {
     }
 
     setup_click_event() {
+        $.on(this.group, 'focus ' + this.gantt.options.popup_trigger, e => {
+            if (this.action_completed) {
+                // just finished a move action, wait for a few seconds
+                return;
+            }
+
+            this.show_popup();
+            this.gantt.unselect_all();
+            this.group.classList.add('active');
+        });
+
+        $.on(this.group, 'dblclick', e => {
+            if (this.action_completed) {
+                // just finished a move action, wait for a few seconds
+                return;
+            }
+
+            this.gantt.trigger_event('click', [this.task]);
+        });
     }
 
     show_popup() {
+        if (this.gantt.bar_being_dragged) return;
+
+        const start_date = date_utils.format(this.task._start, 'MMM D', this.gantt.options.language);
+        const end_date = date_utils.format(
+            date_utils.add(this.task._end, -1, 'second'),
+            'MMM D',
+            this.gantt.options.language
+        );
+        const subtitle = start_date + ' - ' + end_date;
+
+        this.gantt.show_popup({
+            target_element: this.$bar,
+            title: this.task.name,
+            subtitle: subtitle,
+            task: this.task,
+        });
     }
 
     compute_start_end_date() {

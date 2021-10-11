@@ -35,6 +35,11 @@ body {
 
 .highlight-startdate {
   fill:#18ad0d;}
+
+.highlight-contractdate {
+  fill:#ebde30;
+  opacity: 0.5;
+}
 /**/
 
 .gantt .grid-background {

@@ -78,7 +78,8 @@ export default class Gantt {
             view_mode: 'Day',
             date_format: 'YYYY-MM-DD',
             language: 'en',
-            date_p: '',     // Дата подачи заявки изначально не будет указана.
+            date_p: '',         // Дата подачи заявки.
+            date_contract: '',  // Дата готовности по договору.
         };
         this.options = Object.assign({}, default_options, options);
     }
@@ -472,8 +473,9 @@ export default class Gantt {
     }
 
     highlight_dates() {
-       this.highlight_date(date_utils.today(),  'highlight-today',      'after');     // CSS более не используется, убрать.
+       this.highlight_date(date_utils.today(),  'highlight-today',      'after');
        this.highlight_date(this.options.date_p, 'highlight-startdate',  'before');
+       this.highlight_date(this.options.date_contract, 'highlight-contractdate', 'after');
     }
 
     make_dates() {

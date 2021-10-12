@@ -17,7 +17,7 @@
             <button type="button" class="button-ch" onclick="gantt_chart.change_view_mode('Year')">Год</button>
         </div>
 
-        <div class="gantt-target"></div>
+        <div class="gantt-target" id="gantt-target"></div>
     </div>
    
 	<script>
@@ -86,7 +86,7 @@
                   name: 'Упаковка',
                   id: "Task 9",
                   progress: 0,
-                  person: 'Запупырченко И. А.',
+                  person: 'Какая-то очень длинная фамилия',
               },
         ]
 		var gantt_chart = new Gantt(".gantt-target", tasks, {
@@ -97,9 +97,8 @@
             popup_trigger: 'click',
 		});
         
-        // Перенести в отдельную процедуру.
-        window.addEventListener('click', function(evt) {
-            console.log('mouse_x после присвоения: ' + evt.clientX);
+        window.addEventListener('mousedown', function(evt) {    // 'click' срабатывает не в том порядке, который нужен.
+            gantt_chart.set_mouse_x(evt.clientX);
         });
 
         //window.addEventListener('contextmenu', function(evt) {evt.preventDefault();})

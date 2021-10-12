@@ -148,12 +148,17 @@ export default class Bar {
         ];
     }
 
+    get_mouse_x() {
+        return this.gantt.mouse_x;
+    }
+
     bind() {
         if (this.invalid) return;
         this.setup_click_event();
     }
 
     setup_click_event() {
+        
         $.on(this.group, 'focus ' + this.gantt.options.popup_trigger, e => {
             if (this.action_completed) {
                 // just finished a move action, wait for a few seconds
@@ -173,7 +178,6 @@ export default class Bar {
             this.show_popup();
             this.gantt.unselect_all();
             this.group.classList.add('active');
-            alert('mouse x: ' + e.clientX);
         });
         */
 
@@ -191,8 +195,6 @@ export default class Bar {
     show_popup() {
         if (this.gantt.bar_being_dragged) return;
 
-        
-
         const start_date = date_utils.format(this.task._start, 'MMM D', this.gantt.options.language);
         const end_date = date_utils.format(
             date_utils.add(this.task._end, -1, 'second'),
@@ -207,6 +209,8 @@ export default class Bar {
                 '<div class="popup-param-value">' + value + '</div>'
             );
         }
+
+        //console.log('mouse x before show popup: ' + this.gantt.get_mouse_x());
 
         this.gantt.show_popup({
             target_element: this.$bar,

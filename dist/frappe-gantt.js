@@ -608,12 +608,17 @@ class Bar {
         ];
     }
 
+    get_mouse_x() {
+        return this.gantt.mouse_x;
+    }
+
     bind() {
         if (this.invalid) return;
         this.setup_click_event();
     }
 
     setup_click_event() {
+        
         $.on(this.group, 'focus ' + this.gantt.options.popup_trigger, e => {
             if (this.action_completed) {
                 // just finished a move action, wait for a few seconds
@@ -633,7 +638,6 @@ class Bar {
             this.show_popup();
             this.gantt.unselect_all();
             this.group.classList.add('active');
-            alert('mouse x: ' + e.clientX);
         });
         */
 
@@ -651,8 +655,6 @@ class Bar {
     show_popup() {
         if (this.gantt.bar_being_dragged) return;
 
-        
-
         const start_date = date_utils.format(this.task._start, 'MMM D', this.gantt.options.language);
         const end_date = date_utils.format(
             date_utils.add(this.task._end, -1, 'second'),
@@ -665,6 +667,8 @@ class Bar {
                 '<div class="popup-param-value">' + value + '</div>'
             );
         };
+
+        //console.log('mouse x before show popup: ' + this.gantt.get_mouse_x());
 
         this.gantt.show_popup({
             target_element: this.$bar,
@@ -908,6 +912,16 @@ class Popup {
         this.parent = parent;
         this.custom_html = custom_html;
         this.make();
+        this.x = 0;
+    }
+
+    set_x(value) {
+        //console.log('popup.set_x(' + value + ')');
+        this.x = value;
+    }
+    get_x() {
+        //console.log('popup.get_x() = ' + this.x); 
+        return (this.x);
     }
 
     make() {
@@ -954,8 +968,9 @@ class Popup {
         }
 
         if (options.position === 'left') {
-            this.parent.style.left =
-                position_meta.x + (position_meta.width + 10) + 'px';
+            this.parent.style.left = this.get_x() + 'px';
+            //this.parent.style.left =
+            //    position_meta.x + (position_meta.width + 10) + 'px';
             this.parent.style.top = position_meta.y + 'px';
 
             this.pointer.style.transform = 'rotateZ(90deg)';
@@ -1058,6 +1073,7 @@ class Gantt {
             date_contract: '',  // Дата готовности по договору.
         };
         this.options = Object.assign({}, default_options, options);
+        this.mouse_x = 0;
     }
 
     setup_tasks(tasks) {
@@ -1762,12 +1778,15 @@ class Gantt {
     }
 
     show_popup(options) {
+
         if (!this.popup) {
             this.popup = new Popup(
                 this.popup_wrapper,
                 this.options.custom_popup_html,
             );
         }
+
+        this.popup.set_x(this.get_mouse_x());
         this.popup.show(options);
     }
 
@@ -1803,6 +1822,22 @@ class Gantt {
      */
     clear() {
         this.$svg.innerHTML = '';
+    }
+
+    // Сохранить координату Х для последующего использования при открытии всплывающего окна.
+    set_mouse_x(value) {
+        if (typeof(value) == 'number') {
+            let start_x = 0;
+            let doc = document.getElementById('gantt-target');
+            if (doc != null) {
+                start_x = doc.style.left;
+                console.log("left: " + start_x);
+            }
+            this.mouse_x = value - start_x; 
+        }
+    }
+    get_mouse_x() {
+        return this.mouse_x;
     }
 }
 

@@ -91,6 +91,7 @@ export default class Gantt {
             date_contract: '',  // Дата готовности по договору.
         };
         this.options = Object.assign({}, default_options, options);
+        this.mouse_x = 0;
     }
 
     setup_tasks(tasks) {
@@ -795,12 +796,15 @@ export default class Gantt {
     }
 
     show_popup(options) {
+
         if (!this.popup) {
             this.popup = new Popup(
                 this.popup_wrapper,
                 this.options.custom_popup_html,
             );
         }
+
+        this.popup.set_x(this.get_mouse_x());
         this.popup.show(options);
     }
 
@@ -836,6 +840,22 @@ export default class Gantt {
      */
     clear() {
         this.$svg.innerHTML = '';
+    }
+
+    // Сохранить координату Х для последующего использования при открытии всплывающего окна.
+    set_mouse_x(value) {
+        if (typeof(value) == 'number') {
+            let start_x = 0;
+            let doc = document.getElementById('gantt-target');
+            if (doc != null) {
+                start_x = doc.style.left;
+                console.log("left: " + start_x);
+            }
+            this.mouse_x = value - start_x; 
+        }
+    }
+    get_mouse_x() {
+        return this.mouse_x;
     }
 }
 

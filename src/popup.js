@@ -3,6 +3,16 @@ export default class Popup {
         this.parent = parent;
         this.custom_html = custom_html;
         this.make();
+        this.x = 0;
+    }
+
+    set_x(value) {
+        //console.log('popup.set_x(' + value + ')');
+        this.x = value;
+    }
+    get_x() {
+        //console.log('popup.get_x() = ' + this.x); 
+        return (this.x);
     }
 
     make() {
@@ -49,8 +59,9 @@ export default class Popup {
         }
 
         if (options.position === 'left') {
-            this.parent.style.left =
-                position_meta.x + (position_meta.width + 10) + 'px';
+            this.parent.style.left = this.get_x() + 'px';
+            //this.parent.style.left =
+            //    position_meta.x + (position_meta.width + 10) + 'px';
             this.parent.style.top = position_meta.y + 'px';
 
             this.pointer.style.transform = 'rotateZ(90deg)';

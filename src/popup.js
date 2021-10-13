@@ -59,10 +59,10 @@ export default class Popup {
         }
 
         if (options.position === 'left') {
-            this.parent.style.left = this.get_x() + 'px';
+            this.parent.style.left = (this.get_x() + 10) + 'px';
             //this.parent.style.left =
             //    position_meta.x + (position_meta.width + 10) + 'px';
-            this.parent.style.top = position_meta.y + 'px';
+            this.parent.style.top = (position_meta.y + 100) + 'px';
 
             this.pointer.style.transform = 'rotateZ(90deg)';
             this.pointer.style.left = '-7px';
@@ -74,6 +74,11 @@ export default class Popup {
     }
 
     hide() {
+        // Если просто делать Popup невидимым, то клик по нему всё равно засчитывается, так что нужно ещё и сдвигать его.
+        // TODO: переделать скрытие.
+        this.parent.style.left = 0;
+        this.parent.style.top = 0;
+        
         this.parent.style.opacity = 0;
     }
 }

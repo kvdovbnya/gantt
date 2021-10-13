@@ -156,7 +156,7 @@ body {
   overflow: auto;
   font-size: 12px; }
   .gantt-container .popup-wrapper {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     width: 250px;

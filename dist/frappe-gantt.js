@@ -968,10 +968,10 @@ class Popup {
         }
 
         if (options.position === 'left') {
-            this.parent.style.left = this.get_x() + 'px';
+            this.parent.style.left = (this.get_x() + 10) + 'px';
             //this.parent.style.left =
             //    position_meta.x + (position_meta.width + 10) + 'px';
-            this.parent.style.top = position_meta.y + 'px';
+            this.parent.style.top = (position_meta.y + 100) + 'px';
 
             this.pointer.style.transform = 'rotateZ(90deg)';
             this.pointer.style.left = '-7px';
@@ -983,6 +983,11 @@ class Popup {
     }
 
     hide() {
+        // Если просто делать Popup невидимым, то клик по нему всё равно засчитывается, так что нужно ещё и сдвигать его.
+        // TODO: переделать скрытие.
+        this.parent.style.left = 0;
+        this.parent.style.top = 0;
+        
         this.parent.style.opacity = 0;
     }
 }
@@ -1790,6 +1795,10 @@ class Gantt {
         this.popup.show(options);
     }
 
+    check_popup() {
+        // Если произошёл щелчок мышью и указатель находится не на всплывающем окне, то тут скрывать его.
+    }
+
     hide_popup() {
         this.popup && this.popup.hide();
     }
@@ -1827,15 +1836,10 @@ class Gantt {
     // Сохранить координату Х для последующего использования при открытии всплывающего окна.
     set_mouse_x(value) {
         if (typeof(value) == 'number') {
-            let start_x = 0;
-            let doc = document.getElementById('gantt-target');
-            if (doc != null) {
-                start_x = doc.style.left;
-                console.log("left: " + start_x);
-            }
-            this.mouse_x = value - start_x; 
+            this.mouse_x = value;// - start_x; 
         }
     }
+
     get_mouse_x() {
         return this.mouse_x;
     }

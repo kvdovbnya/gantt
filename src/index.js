@@ -808,8 +808,10 @@ export default class Gantt {
         this.popup.show(options);
     }
 
-    check_popup() {
-        // Если произошёл щелчок мышью и указатель находится не на всплывающем окне, то тут скрывать его.
+    check_popup() {     // Если произошёл щелчок мышью и указатель находится не на всплывающем окне, то тут скрывать его. 
+        if ( this.isMouseInsidePopup() ) {
+            this.hide_popup()
+        } 
     }
 
     hide_popup() {
@@ -846,6 +848,7 @@ export default class Gantt {
         this.$svg.innerHTML = '';
     }
 
+    // Того, что ниже, изначально в скрипте не было.
     // Сохранить координаты для последующего использования при открытии всплывающего окна.
     set_mouse_coords(x, y) {
         if ((typeof(x) == 'number') && (typeof(y) == 'number')) {
@@ -859,6 +862,30 @@ export default class Gantt {
     }
     get_mouse_y() {
         return this.mouse_y;
+    }
+
+    isMouseInsidePopup() {
+        let p = document.querySelector(".popup-wrapper");
+        
+        if (p == null) {
+            return false;
+        
+        } else {
+            if (p.style.opacity == 0) {
+                return false;
+
+            } else {
+                let mouse_x = this.get_mouse_x();
+                let mouse_y = this.get_mouse_y();
+                
+                return  (p.style.left                   < mouse_x) && 
+                        (p.style.left + p.style.width   > mouse_x) &&
+                        (p.style.top                    < mouse_y) && 
+                        (p.style.left + p.style.height  > mouse_y)
+            }
+            
+
+        };
     }
 }
 

@@ -15,6 +15,7 @@
             <button type="button" class="button-ch" onclick="gantt_chart.change_view_mode('Two weeks')">Две недели</button>
             <button type="button" class="button-ch" onclick="gantt_chart.change_view_mode('Month')">Месяц</button>
             <button type="button" class="button-ch" onclick="gantt_chart.change_view_mode('Year')">Год</button>
+            <button type="button" class="button-ch" onclick="console.log(gantt_chart.isMouseInsidePopup())">ТЕСТ</button>
         </div>
 
         <div class="gantt-target" id="gantt-target"></div>
@@ -98,8 +99,8 @@
 		});
         
         window.addEventListener('mousedown', function(evt) {    // 'click' срабатывает не в том порядке, который нужен.
-            gantt_chart.hide_popup();                           // Чтобы Popup скрывался по клику в любом месте документа, а не только на графике. Заменить на check_popup();
             gantt_chart.set_mouse_coords(evt.clientX, evt.clientY);
+            gantt_chart.check_popup();                           // Чтобы Popup скрывался по клику в любом месте документа, а не только на графике.
         });
 
         window.addEventListener('contextmenu', function(evt) {evt.preventDefault();})

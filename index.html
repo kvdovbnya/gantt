@@ -99,7 +99,7 @@
         
         window.addEventListener('mousedown', function(evt) {    // 'click' срабатывает не в том порядке, который нужен.
             gantt_chart.hide_popup();                           // Чтобы Popup скрывался по клику в любом месте документа, а не только на графике. Заменить на check_popup();
-            gantt_chart.set_mouse_x(evt.clientX);
+            gantt_chart.set_mouse_coords(evt.clientX, evt.clientY);
         });
 
         window.addEventListener('contextmenu', function(evt) {evt.preventDefault();})

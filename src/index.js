@@ -804,7 +804,7 @@ export default class Gantt {
             );
         }
 
-        this.popup.set_x(this.get_mouse_x());
+        this.popup.set_coords(this.get_mouse_x(), this.get_mouse_y());
         this.popup.show(options);
     }
 
@@ -846,15 +846,19 @@ export default class Gantt {
         this.$svg.innerHTML = '';
     }
 
-    // Сохранить координату Х для последующего использования при открытии всплывающего окна.
-    set_mouse_x(value) {
-        if (typeof(value) == 'number') {
-            this.mouse_x = value;// - start_x; 
+    // Сохранить координаты для последующего использования при открытии всплывающего окна.
+    set_mouse_coords(x, y) {
+        if ((typeof(x) == 'number') && (typeof(y) == 'number')) {
+            this.mouse_x = x;
+            this.mouse_y = y;
         }
     }
 
     get_mouse_x() {
         return this.mouse_x;
+    }
+    get_mouse_y() {
+        return this.mouse_y;
     }
 }
 

@@ -913,15 +913,19 @@ class Popup {
         this.custom_html = custom_html;
         this.make();
         this.x = 0;
+        this.y = 0;
+        // Отступы по горизонтали и вертикали для всплывающего окна определяются в CSS.
     }
 
-    set_x(value) {
-        //console.log('popup.set_x(' + value + ')');
-        this.x = value;
+    set_coords(x, y) {
+        this.x = x;
+        this.y = y;
     }
     get_x() {
-        //console.log('popup.get_x() = ' + this.x); 
         return (this.x);
+    }
+    get_y() {
+        return (this.y);
     }
 
     make() {
@@ -968,10 +972,11 @@ class Popup {
         }
 
         if (options.position === 'left') {
-            this.parent.style.left = (this.get_x() + 10) + 'px';
+            this.parent.style.left  = this.get_x() + 'px';
+            this.parent.style.top   = this.get_y() + 'px';
             //this.parent.style.left =
             //    position_meta.x + (position_meta.width + 10) + 'px';
-            this.parent.style.top = (position_meta.y + 100) + 'px';
+            //this.parent.style.top = (position_meta.y + 100) + 'px';
 
             this.pointer.style.transform = 'rotateZ(90deg)';
             this.pointer.style.left = '-7px';
@@ -1791,7 +1796,7 @@ class Gantt {
             );
         }
 
-        this.popup.set_x(this.get_mouse_x());
+        this.popup.set_coords(this.get_mouse_x(), this.get_mouse_y());
         this.popup.show(options);
     }
 
@@ -1833,15 +1838,19 @@ class Gantt {
         this.$svg.innerHTML = '';
     }
 
-    // Сохранить координату Х для последующего использования при открытии всплывающего окна.
-    set_mouse_x(value) {
-        if (typeof(value) == 'number') {
-            this.mouse_x = value;// - start_x; 
+    // Сохранить координаты для последующего использования при открытии всплывающего окна.
+    set_mouse_coords(x, y) {
+        if ((typeof(x) == 'number') && (typeof(y) == 'number')) {
+            this.mouse_x = x;
+            this.mouse_y = y;
         }
     }
 
     get_mouse_x() {
         return this.mouse_x;
+    }
+    get_mouse_y() {
+        return this.mouse_y;
     }
 }
 

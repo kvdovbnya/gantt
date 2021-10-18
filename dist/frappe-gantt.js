@@ -1247,7 +1247,7 @@ class Gantt {
             this.gantt_end = date_utils.add(this.gantt_end, 2, 'day');
         } else if (this.view_is(VIEW_MODE.DAY)) {
             this.gantt_start = date_utils.add(this.gantt_start, -5, 'day');
-            this.gantt_end = date_utils.add(this.gantt_end, 4, 'day');
+            this.gantt_end = date_utils.add(this.gantt_end, 6, 'day');      // Такое кол-во дней добавлено, чтобы полностью вмещалось название этапа.
         } else if (this.view_is(VIEW_MODE.WEEK)) {
             this.gantt_start = date_utils.add(this.gantt_start, -7, 'day');
             this.gantt_end = date_utils.add(this.gantt_end, 7, 'day');
